@@ -24,19 +24,26 @@ st.markdown(
     "html { font-size: 100% !important; }"
     # slightly larger labels for the gene box and the two file uploaders
     ".stTextInput label p, .stFileUploader label p { font-size: 1.25rem !important; }"
-    # slightly larger sidebar parameter labels (radius / PAE / pLDDT)
-    ".stSlider label p, .stNumberInput label p { font-size: 1.15rem !important; }"
+    # smaller text throughout the left (sidebar) panel
+    "section[data-testid='stSidebar'] label p,"
+    "section[data-testid='stSidebar'] .stMarkdown,"
+    "section[data-testid='stSidebar'] p,"
+    "section[data-testid='stSidebar'] a { font-size: 0.85rem !important; }"
+    "section[data-testid='stSidebar'] h2 { font-size: 1.0rem !important; }"
     "</style>",
     unsafe_allow_html=True,
 )
 _HERE = os.path.dirname(__file__)
 _LOGO = os.path.join(_HERE, "logo.png")          # Finucane Lab logo
 _BROAD = os.path.join(_HERE, "broad.logo.png")   # Broad Institute logo
+_3DNT = os.path.join(_HERE, "3dnt_logo.png")     # 3DNT app logo
 _lc1, _lc2, _ = st.columns([2, 2, 6])
 if os.path.exists(_LOGO):
     _lc1.image(_LOGO, use_container_width=True)
 if os.path.exists(_BROAD):
     _lc2.image(_BROAD, use_container_width=True)
+if os.path.exists(_3DNT):
+    st.image(_3DNT, width=460)
 
 # left-sidebar navigation
 def _results_heading(text):
