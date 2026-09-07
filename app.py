@@ -36,7 +36,7 @@ st.markdown(
 _HERE = os.path.dirname(__file__)
 _LOGO = os.path.join(_HERE, "logo.png")          # Finucane Lab logo
 _BROAD = os.path.join(_HERE, "broad.logo.png")   # Broad Institute logo
-_3DNT = os.path.join(_HERE, "3dnt_logo.png")     # 3DNT app logo
+_3DNT = os.path.join(_HERE, "3dnt_final.jpg")    # 3DNT app logo
 _lc1, _lc2, _ = st.columns([2, 2, 6])
 if os.path.exists(_LOGO):
     _lc1.image(_LOGO, use_container_width=True)
