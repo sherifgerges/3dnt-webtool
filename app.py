@@ -512,8 +512,9 @@ ex_available = os.path.exists(EX_CASE) and os.path.exists(EX_CTRL)
 
 ex_run = False
 if ex_available:
-    ex_run = st.button("Try ATP2B2 example",
-                       help="Load the bundled ATP2B2 (Q01814) case/control set and run")
+    ex_run = st.button(
+        ":red[**Try ATP2B2 example (using autism and schizophrenia missense variants)**]",
+        help="Load the bundled ATP2B2 (Q01814) case/control set and run")
 
 # resolve inputs: example data takes precedence when its button is clicked
 if ex_run:
