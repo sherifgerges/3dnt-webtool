@@ -55,8 +55,13 @@ def _results_heading(text):
     )
 
 
-def render_result(scores, meta, pdb_gz, case_v, ctrl_v, gene, acc, seq_len, radius, pae_cutoff):
+def render_result(scores, meta, pdb_gz, case_v, ctrl_v, gene, acc, seq_len, radius,
+                  pae_cutoff, phenotype=""):
     """Render the per-protein 3DNT result (metrics, table, stats, structure)."""
+    if phenotype:
+        st.markdown(
+            f"<div style='font-size:1.0rem; color:#555; margin-bottom:2px'>"
+            f"Phenotype: <b>{phenotype}</b></div>", unsafe_allow_html=True)
     # 5f. results ----------------------------------------------------------
     bonf = meta["bonferroni_p"]
     tested = scores[scores["center_p"].notna()].copy()
@@ -105,7 +110,10 @@ def render_result(scores, meta, pdb_gz, case_v, ctrl_v, gene, acc, seq_len, radi
     st.dataframe(show, use_container_width=True, height=380)
     st.download_button("Download per-residue scores TSV",
                        scores.to_csv(sep="\t", index=False),
-                       file_name=f"{gene}_{acc}_fisher_3dnt.tsv")
+                       file_name=(f"{gene}_{acc}"
+                                  + (f"_{''.join(c if c.isalnum() else '_' for c in phenotype)}"
+                                     if phenotype else "")
+                                  + "_fisher_3dnt.tsv"))
 
     # summary stats — below the table, one point per line -----------------
     neglog_min = -np.log10(max(meta["min_p"], 1e-300)) if np.isfinite(meta["min_p"]) else float("nan")
@@ -385,7 +393,8 @@ def render_asd_page(radius, pae_cutoff, plddt_cutoff, n_sims):
     case_v = [{"pos": int(p)} for p in counts.loc[counts.ac_case > 0, "aa_pos"]]
     ctrl_v = [{"pos": int(p)} for p in counts.loc[counts.ac_control > 0, "aa_pos"]]
     render_result(scores, meta, pdb_gz, case_v, ctrl_v, gene, acc,
-                  len(seq) or int(counts["aa_pos"].max()), radius, pae_cutoff)
+                  len(seq) or int(counts["aa_pos"].max()), radius, pae_cutoff,
+                  phenotype="Autism (ASD)")
 
 
 st.markdown(
@@ -499,6 +508,13 @@ if page == "ASD (genome-wide)":
     st.stop()
 
 query = st.text_input("Gene symbol or UniProt accession", placeholder="e.g. CDK13 or Q14004")
+_PHENOS = ["Autism (ASD)", "Schizophrenia (SCZ)", "Developmental disorder",
+           "Epilepsy", "Intellectual disability", "Other / custom"]
+phenotype = st.selectbox(
+    "Phenotype", _PHENOS, index=0,
+    help="Label for this analysis (shown in the results; does not change the computation).")
+if phenotype == "Other / custom":
+    phenotype = st.text_input("Enter phenotype label", value="").strip() or "Custom"
 c1, c2 = st.columns(2)
 case_file = c1.file_uploader("Case variants", type=["txt", "tsv", "csv"])
 ctrl_file = c2.file_uploader("Control variants", type=["txt", "tsv", "csv"])
@@ -510,6 +526,12 @@ st.markdown(
     "allele count (otherwise each line = one allele). Header rows are ignored.</div>",
     unsafe_allow_html=True,
 )
+
+# --- submit-your-own-structure (placeholder) --------------------------------
+if st.button("I want to submit my own structure"):
+    st.info("Uploading your own structure (a PDB file) is coming soon. For now, the "
+            "app automatically fetches and uses the AlphaFold model for the "
+            "gene / UniProt accession you enter above.")
 
 # --- bundled example dataset ------------------------------------------------
 EX_DIR = os.path.join(_HERE, "examples")
@@ -599,4 +621,4 @@ if run:
             st.error(f"Fisher scan failed: {e}"); st.stop()
 
     render_result(scores, meta, pdb_gz, case_v, ctrl_v, gene, acc,
-                  len(seq), radius, pae_cutoff)
+                  len(seq), radius, pae_cutoff, phenotype=phenotype)
