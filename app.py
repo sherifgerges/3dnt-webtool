@@ -450,16 +450,7 @@ if page == "3DNT":
         "margin-bottom:10px'>"
         "The 3D neighborhood test maps <b>case</b> and <b>control</b> missense "
         "variants onto a protein's AlphaFold structure and asks whether case "
-        "variants cluster together in 3D. For every residue it defines a spatial "
-        "<b>neighborhood</b> — all residues within a radius <i>R</i> (using all-atom "
-        "distances, down-weighting poorly-predicted pairs via AlphaFold PAE) — and "
-        "compares the case:control ratio inside that neighborhood to the rest of the "
-        "protein with a one-sided <b>Fisher's exact test</b>. Each residue is scored "
-        "by the strongest enrichment of any neighborhood containing it "
-        "(−log₁₀ of the smallest p), and significance is assessed by <b>permutation</b> "
-        "(shuffling case/control labels) to account for the many overlapping, "
-        "correlated neighborhoods. Enter a gene and upload case + control variant "
-        "lists below.</div>",
+        "variants cluster together in 3D.</div>",
         unsafe_allow_html=True,
     )
 
